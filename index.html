@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>DOM test</title>
+  </head>
+  <body>
+    <p class="text">Calculator</p>
+    <div class="container">
+      <input type="text" id="calcScreen" value="0." />
+      <div class="btnsContainer">
+        <button class="digit btn" value="7" onclick="digitPressed(this)">7</button>
+        <button class="digit btn" value="8" onclick="digitPressed(this)">8</button>
+        <button class="digit btn" value="9" onclick="digitPressed(this)">9</button>
+        <button class="digit btn" value="4" onclick="digitPressed(this)">4</button>
+        <button class="digit btn" value="5" onclick="digitPressed(this)">5</button>
+        <button class="digit btn" value="6" onclick="digitPressed(this)">6</button>
+        <button class="digit btn" value="1" onclick="digitPressed(this)">1</button>
+        <button class="digit btn" value="2" onclick="digitPressed(this)">2</button>
+        <button class="digit btn" value="3" onclick="digitPressed(this)">3</button>
+        <button class="digit btn" value="0" onclick="digitPressed(this)">0</button>
+        <button class="digit btn" value="." onclick="digitPressed(this)">.</button>
+        
+        
+        <button class="op btn" value="+" onclick="opPressed(this)">+</button>
+        <button class="op btn" value="-" onclick="opPressed(this)">-</button>
+        <button class="op btn" value="*" onclick="opPressed(this)">*</button>
+        <button class="op btn" value="/" onclick="opPressed(this)">/</button>
+        <button class="eq btn" value="=" onclick="eqPressed(this)">=</button>
+        
+        <button class="clr btn" value="C" onclick="clearPressed()">C</button>
+        <button class="del btn" value="Del" onclick="delPressed()">Del</button>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

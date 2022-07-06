@@ -1,0 +1,110 @@
+p {
+  text-align: center;
+}
+
+.btn {
+  /* max-width: 30px; */
+  height: 2.5em;
+}
+
+#calcScreen {
+  margin-bottom: 20px;
+  text-align: right;
+  height: 4rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.btnsContainer {
+  display: grid;
+  /* grid-template-columns: repeat(3, 1fr); */
+  grid-template-areas: "Del Del Del Del"
+                       "C divide mul minus"
+                       "seven eight nine plus"
+                       "four five six plus"
+                       "one two three eq"
+                       "zero zero dot eq";
+                       /* "Del"; */
+
+  gap: 15px;
+}
+
+.digit[value="0"] {
+  grid-area: zero;
+  /* grid-auto-flow: row; */
+}
+
+.digit[value="1"] {
+  grid-area: one;
+}
+
+.digit[value="2"] {
+  grid-area: two;
+}
+
+.digit[value="3"] {
+  grid-area: three;
+}
+
+.digit[value="4"] {
+  grid-area: four;
+}
+
+.digit[value="5"] {
+  grid-area: five;
+}
+
+.digit[value="6"] {
+  grid-area: six;
+}
+
+.digit[value="7"] {
+  grid-area: seven;
+}
+
+.digit[value="8"] {
+  grid-area: eight;
+}
+
+.digit[value="9"] {
+  grid-area: nine;
+}
+
+.digit[value="."] {
+  grid-area: dot;
+}
+
+.op[value="+"] {
+  grid-area: plus;
+  height: 6.1em;
+}
+
+.op[value="-"] {
+  grid-area: minus;
+}
+
+.op[value="*"] {
+  grid-area: mul;
+}
+
+.op[value="/"] {
+  grid-area: divide;
+}
+
+.clr.btn {
+  grid-area: C;
+}
+
+.del.btn {
+  grid-area: Del;
+}
+
+.eq.btn {
+  grid-area: eq;
+  height: 6.1em;
+}

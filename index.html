@@ -5,13 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles.css" />
-    <title>DOM test</title>
+    <title>Calculator</title>
   </head>
   <body>
-    <p class="text">Calculator</p>
+    <h1 class="text">Calculator</h1>
     <div class="container">
-      <input type="text" id="calcScreen" value="0." />
-      <div class="btnsContainer">
+      <input type="text" id="calcScreen" value="0." readonly />
+      <div class="btnsContainer" >
         <button class="digit btn" value="7" onclick="digitPressed(this)">7</button>
         <button class="digit btn" value="8" onclick="digitPressed(this)">8</button>
         <button class="digit btn" value="9" onclick="digitPressed(this)">9</button>
@@ -24,12 +24,11 @@
         <button class="digit btn" value="0" onclick="digitPressed(this)">0</button>
         <button class="digit btn" value="." onclick="digitPressed(this)">.</button>
         
-        
         <button class="op btn" value="+" onclick="opPressed(this)">+</button>
         <button class="op btn" value="-" onclick="opPressed(this)">-</button>
         <button class="op btn" value="*" onclick="opPressed(this)">*</button>
         <button class="op btn" value="/" onclick="opPressed(this)">/</button>
-        <button class="eq btn" value="=" onclick="eqPressed(this)">=</button>
+        <button class="eq btn" value="=" onclick="eqPressed()">=</button>
         
         <button class="clr btn" value="C" onclick="clearPressed()">C</button>
         <button class="del btn" value="Del" onclick="delPressed()">Del</button>

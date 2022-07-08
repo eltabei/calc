@@ -6,12 +6,31 @@
 const CalcScreenDefault = "0.";
 const Operators = ["+", "-", "*", "/"];
 const tb = document.getElementById("calcScreen");
-const allBtns = document.querySelectorAll("div.btnsContainer > button");
-const eqBtn = document.querySelector("div.btnsContainer > button[value='=']");
+const allBtns = document.getElementsByClassName("btn");
+const digitBtns = document.getElementsByClassName("digit");
+const opBtns = document.getElementsByClassName("op");
+// const eqBtn = document.querySelector("div.btnsContainer > button[value='=']");
+const eqBtn = document.getElementsByClassName("eq")[0];
+const clrBtn = document.getElementsByClassName("clr")[0];
+const delBtn = document.getElementsByClassName("del")[0];
+
 let op = null;
 let lastKeyDown = null;
 // contains parts of equation: operands and operators
 let operands = [];
+
+// add event listeners to all digit buttons
+for (const btn of digitBtns) {
+  btn.addEventListener("click", () => digitPressed(btn));
+}
+// add event listeners to all op buttons
+for (const btn of opBtns) {
+  btn.addEventListener("click", () => opPressed(btn));
+}
+
+eqBtn.addEventListener("click", eqPressed);
+clrBtn.addEventListener("click", clearPressed);
+delBtn.addEventListener("click", delPressed);
 
 
 function digitPressed(btn) {
@@ -24,6 +43,7 @@ function digitPressed(btn) {
   //console.log(lastKeyDown);
 }
 
+
 function opPressed(btn) {
   //console.log("opPressed: " + btn.value);
   if (operands.length == 2) {
@@ -35,8 +55,8 @@ function opPressed(btn) {
 }
 
 function eqPressed() {
-  console.log("eqPressed", operands, op);
   operands.push(tb.value);
+  console.log("eqPressed", operands, op);
   switch (op) {
     case "+":
       tb.value = parseFloat(operands[0]) + parseFloat(operands[1]);

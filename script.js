@@ -1,6 +1,4 @@
 // TODO
-// fix bug that happens sometimes when mixing using keyboard and mouse in
-// one operation
 
 const CalcScreenDefault = "0";
 const CalcOperators = ["+", "-", "*", "/"];
@@ -42,6 +40,7 @@ delBtn.addEventListener("click", delPressed);
 
 
 function digitPressed(btn) {
+  // fired when a digit or decimal point is pressed
   // if this is the very first key to be pressed
   // or if an operator was just pressed
   if (lastKeyDown === null || CalcOperators.includes(lastKeyDown)) {
@@ -54,17 +53,17 @@ function digitPressed(btn) {
 
 
 function operatorPressed(btn) {
-  // if 2 operators pressed in a row, ignore last one
+  // if 2 operators pressed in a row, ignore the first one
   if (CalcOperators.includes(lastKeyDown)) {
-    operators.pop();
-  }
-  operators.push(btn.value);
-  operands.push(tb.value);
-  if (operators.length == 2) {
-    solve();
-    operands = [tb.value];
     operators = [btn.value];
-    //operators.shift();
+  } else {
+    operators.push(btn.value);
+    operands.push(tb.value);
+    if (operators.length == 2) {
+      solve();
+      operands = [tb.value];
+      operators = [btn.value];
+    }
   }
   lastKeyDown = btn.value;
   updateEquation(false);
@@ -151,7 +150,7 @@ function delPressed() {
 
 
 document.onkeydown = function(e) {
-  let btn = document.querySelector("div.btnsContainer > button[value='" + e.key + "']");
+  const btn = document.querySelector("div.btnsContainer > button[value='" + e.key + "']");
   //console.log("Keydown: " + e.key);
   switch (e.key) {
     case "0":
@@ -178,10 +177,10 @@ document.onkeydown = function(e) {
       eqBtn.click();
       break;
     case "Backspace":
-      delPressed();
+      delBtn.click();
       break;
     case "Escape":
-      clearPressed();
+      clrBtn.click();
       break;
     default:
       break;

@@ -40,12 +40,26 @@ p {
   display: grid;
   /* grid-template-columns: repeat(3, 1fr); */
   grid-template-areas: "Del Del Del Del"
+                       /* "x y z m" */
                        "C divide mul minus"
                        "seven eight nine plus"
                        "four five six plus"
                        "one two three eq"
                        "zero zero dot eq";
   gap: 15px;
+}
+
+.clr.btn {
+  grid-area: C;
+}
+
+.del.btn {
+  grid-area: Del;
+}
+
+.eq.btn {
+  grid-area: eq;
+  height: 5.5rem;
 }
 
 .digit[value="0"] {
@@ -110,15 +124,18 @@ p {
   grid-area: divide;
 }
 
-.clr.btn {
-  grid-area: C;
+.op[value="x"] {
+  grid-area: x;
 }
 
-.del.btn {
-  grid-area: Del;
+.op[value="y"] {
+  grid-area: y;
 }
 
-.eq.btn {
-  grid-area: eq;
-  height: 5.5rem;
+.op[value="z"] {
+  grid-area: z;
+}
+
+.op[value="m"] {
+  grid-area: m;
 }

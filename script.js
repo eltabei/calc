@@ -1,12 +1,12 @@
 // TODO
 // fix bug that happens sometimes when mixing using keyboard and mouse in
 // one operation
-// handle repeated pressing of equal (emulate Windows calc behavior)
 
 const CalcScreenDefault = "0";
 const CalcOperators = ["+", "-", "*", "/"];
 const Equal = "=";
 const tb = document.getElementById("calcScreen");
+tb.value = CalcScreenDefault;
 const eqn = document.getElementsByClassName("eqn")[0];
 const allBtns = document.getElementsByClassName("btn");
 const digitBtns = document.getElementsByClassName("digit");
@@ -22,6 +22,10 @@ let operators = [];
 let lastKeyDown = null;
 // array of operands (numbers)
 let operands = [];
+
+// previous operation
+let prevOperators = [];
+let prevOprands = [];
 
 // add event listeners to all digit buttons
 for (const btn of digitBtns) {
@@ -68,14 +72,23 @@ function operatorPressed(btn) {
 
 
 function equalPressed() {
-  operands.push(tb.value);
+  if (lastKeyDown === Equal) {
+    // console.log(operands, operators);
+    // give result of eqn: number on screen, last operation operator,last operation 2nd operand
+    operands = [tb.value, lastOperands[lastOperands.length - 1]];
+    operators = lastOperators;
+  } else {
+    operands.push(tb.value);
+  }
   console.log("eqPressed", operands, operators);
   updateEquation();
   solve();
+  lastOperands = operands;
   operands = [];
+  lastOperators = operators.slice();
   operators.shift();
-  lastKeyDown = null;
-  console.log(operands, operators);
+  lastKeyDown = Equal;
+  //console.log(operands, operators);
 }
 
 
@@ -103,6 +116,7 @@ function solve() {
 function updateEquation(byEqualKey=true) {
   if (operands.length == 0) {
     eqn.textContent = "";
+    return;
   } else if (operands.length == 1) {
     eqn.textContent = `${operands[0]} ${operators[0]}`;
   } else {
@@ -112,6 +126,7 @@ function updateEquation(byEqualKey=true) {
       eqn.textContent = `${tb.value} ${operators[operators.length - 1]}`;
     }
   }
+  eqn.textContent = eqn.textContent.replace("*", "×").replace("/", "÷");
 }
 
 

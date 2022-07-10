@@ -21,28 +21,28 @@ let lastKeyDown = null;
 // array of operands (numbers)
 let operands = [];
 
-// previous operation
+// arrays to store previous operation
 let prevOperators = [];
 let prevOprands = [];
 
 // add event listeners to all digit buttons
 for (const btn of digitBtns) {
-  btn.addEventListener("click", () => digitPressed(btn));
+  btn.addEventListener("click", digitClicked);
 }
 // add event listeners to all op buttons
 for (const btn of opBtns) {
-  btn.addEventListener("click", () => operatorPressed(btn));
+  btn.addEventListener("click", operatorClicked);
 }
 // add event listeners to rest of buttons
-eqBtn.addEventListener("click", equalPressed);
-clrBtn.addEventListener("click", clearPressed);
-delBtn.addEventListener("click", delPressed);
+eqBtn.addEventListener("click", equalClicked);
+clrBtn.addEventListener("click", clearClicked);
+delBtn.addEventListener("click", delClicked);
 
-
-function digitPressed(btn) {
+function digitClicked(e) {
   // fired when a digit or decimal point is pressed
   // if this is the very first key to be pressed
   // or if an operator was just pressed
+  let btn = e.target;
   if (lastKeyDown === null || CalcOperators.includes(lastKeyDown)) {
     tb.value = btn.value;
   } else {
@@ -51,15 +51,16 @@ function digitPressed(btn) {
   lastKeyDown = btn.value;
 }
 
-
-function operatorPressed(btn) {
+function operatorClicked(e) {
+  // fired when an operator key is pressed
+  let btn = e.target;
   // if 2 operators pressed in a row, ignore the first one
   if (CalcOperators.includes(lastKeyDown)) {
     operators = [btn.value];
   } else {
     operators.push(btn.value);
     operands.push(tb.value);
-    if (operators.length == 2) {
+    if (operators.length === 2) {
       solve();
       operands = [tb.value];
       operators = [btn.value];
@@ -69,8 +70,7 @@ function operatorPressed(btn) {
   updateEquation(false);
 }
 
-
-function equalPressed() {
+function equalClicked() {
   if (lastKeyDown === Equal) {
     // console.log(operands, operators);
     // give result of eqn: number on screen, last operation operator,last operation 2nd operand
@@ -90,9 +90,9 @@ function equalPressed() {
   //console.log(operands, operators);
 }
 
-
 function solve() {
-    switch (operators[0]) {
+  // solves entered equation (so far)
+  switch (operators[0]) {
     case "+":
       tb.value = parseFloat(operands[0]) + parseFloat(operands[1]);
       break;
@@ -111,12 +111,12 @@ function solve() {
   }
 }
 
-
-function updateEquation(byEqualKey=true) {
-  if (operands.length == 0) {
+function updateEquation(byEqualKey = true) {
+  // updates text representation of the equation, above calculator screen
+  if (operands.length === 0) {
     eqn.textContent = "";
     return;
-  } else if (operands.length == 1) {
+  } else if (operands.length === 1) {
     eqn.textContent = `${operands[0]} ${operators[0]}`;
   } else {
     if (byEqualKey) {
@@ -128,8 +128,7 @@ function updateEquation(byEqualKey=true) {
   eqn.textContent = eqn.textContent.replace("*", "×").replace("/", "÷");
 }
 
-
-function clearPressed() {
+function clearClicked() {
   tb.value = CalcScreenDefault;
   operators = [];
   operands = [];
@@ -137,20 +136,20 @@ function clearPressed() {
   updateEquation();
 }
 
-
-function delPressed() {
-  if (tb.value == CalcScreenDefault) {
+function delClicked() {
+  if (tb.value === CalcScreenDefault) {
     return;
   }
   tb.value = tb.value.slice(0, -1);
-  if (tb.value == "") {
+  if (tb.value === "") {
     tb.value = CalcScreenDefault;
   }
 }
 
-
-document.onkeydown = function(e) {
-  const btn = document.querySelector("div.btnsContainer > button[value='" + e.key + "']");
+document.onkeydown = function (e) {
+  const btn = document.querySelector(
+    "div.btnsContainer > button[value='" + e.key + "']"
+  );
   //console.log("Keydown: " + e.key);
   switch (e.key) {
     case "0":
@@ -185,4 +184,4 @@ document.onkeydown = function(e) {
     default:
       break;
   }
-}
+};

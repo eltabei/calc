@@ -1,4 +1,15 @@
 // TODO
+// Typing after getting an operation result should erase screen AND
+// equation instead of appending to it
+//
+// Automatically add zero when typing (.1 + .2)
+// Division by zero: write what instead of infinity?
+// Prevent multi dots pressing
+// Emulate windows or Casio calculator bahavior during errors
+// Handle floating points mistakes e.g. (.1 + .2)
+// Add shadow to give 3d-like effect
+// write some short info in footer: copyright & link to github profile
+
 
 const CalcScreenDefault = "0";
 const CalcOperators = ["+", "-", "*", "/"];
@@ -16,10 +27,10 @@ const delBtn = document.getElementsByClassName("del")[0];
 
 // array of operators
 let operators = [];
-// last calculator key pressed
-let lastKeyDown = null;
 // array of operands (numbers)
 let operands = [];
+// last calculator key pressed
+let lastKeyDown = null;
 
 // arrays to store previous operation
 let prevOperators = [];

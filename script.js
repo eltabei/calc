@@ -8,7 +8,9 @@
 // [x] Handle floating points mistakes e.g. (.1 + .2)
 // [x] Fix bug with x.00000
 // [x] Handle single operand then equal
-// [ ] Add shadow to give 3d-like effect
+// [x] Add shadow to give 3d-like effect
+// [x] Fix bug with repeated equal presses
+// [ ] Improve shadow
 // [ ] write some short info in footer: copyright & link to github profile
 
 
@@ -162,9 +164,15 @@ function updateEquation(byEqualKey = true) {
   if (operands.length === 0) {
     eqn.textContent = "";
     return;
-  } else if (operands.length === 1) {
+  }
+  
+  if (operators.length === 0) {
+    eqn.textContent = `${operands[0]} = `;
+    return;
+  }
+    
+  if (operands.length === 1) {
     if (operators.length === 0) {
-      eqn.textContent = `${operands[0]} = `;
     } else {
       eqn.textContent = `${operands[0]} ${operators[0]}`;
     }

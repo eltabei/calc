@@ -6,6 +6,8 @@
 // [x] Prevent multi dots pressing
 // [x] Delete .0 when typed into screen or equation or obtained as a result
 // [x] Handle floating points mistakes e.g. (.1 + .2)
+// [x] Fix bug with x.00000
+// [x] Handle single operand then equal
 // [ ] Add shadow to give 3d-like effect
 // [ ] write some short info in footer: copyright & link to github profile
 
@@ -23,7 +25,6 @@ const opBtns = document.getElementsByClassName("op");
 const eqBtn = document.getElementsByClassName("eq")[0];
 const clrBtn = document.getElementsByClassName("clr")[0];
 const delBtn = document.getElementsByClassName("del")[0];
-const floatError = .0000000000000001;
 
 // array of operators
 let operators = [];
@@ -75,7 +76,7 @@ function operatorClicked(e) {
   if (CalcOperators.includes(lastKeyDown)) {
     operators = [btn.value];
   } else {
-    calcScreenTrimPointZero();
+    calcScreenTrimPointZeros();
     operators.push(btn.value);
     operands.push(tb.value);
     if (operators.length === 2) {
@@ -88,11 +89,13 @@ function operatorClicked(e) {
   updateEquation(false);
 }
 
-function calcScreenTrimPointZero() {
+function calcScreenTrimPointZeros() {
   // convert x.0 to x
-  if (tb.value.endsWith(".0")) {
-    tb.value = tb.value.slice(0, -2);
+  let v = tb.value
+  while (v.endsWith("0") || v.endsWith(".")) {
+    v = v.slice(0, -1);
   }
+  tb.value = v;
 }
 
 function fixResult(n) {
@@ -106,7 +109,7 @@ function equalClicked() {
     operands = [tb.value, lastOperands[lastOperands.length - 1]];
     operators = lastOperators;
   } else {
-    calcScreenTrimPointZero();
+    calcScreenTrimPointZeros();
     operands.push(tb.value);
   }
   console.log("eqPressed", operands, operators);
@@ -123,6 +126,10 @@ function equalClicked() {
 function solve() {
   // solves entered equation (so far)
   let v;
+  if (operators.length === 0) {
+    tb.value = parseFloat(operands[0]);
+    return;
+  }
   switch (operators[0]) {
     case "+":
       v = parseFloat(operands[0]) + parseFloat(operands[1]);
@@ -156,7 +163,11 @@ function updateEquation(byEqualKey = true) {
     eqn.textContent = "";
     return;
   } else if (operands.length === 1) {
-    eqn.textContent = `${operands[0]} ${operators[0]}`;
+    if (operators.length === 0) {
+      eqn.textContent = `${operands[0]} = `;
+    } else {
+      eqn.textContent = `${operands[0]} ${operators[0]}`;
+    }
   } else {
     if (byEqualKey) {
       if (operands[1] == 0) {

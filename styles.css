@@ -1,5 +1,11 @@
 body {
   background-color: lightgrey;
+  /* center page contents horizontally & vertically */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 h1 {
@@ -21,16 +27,17 @@ p {
 
 #calcScreen {
   margin-bottom: 20px;
+  margin-right: 0px;
   text-align: right;
   height: 4rem;
   font-size: 1.2rem;
+  width: calc(100% - 5px);
 }
 
 .container {
-  display: flex;
-  flex-direction: column;
-  max-width: 280px;
-  margin: 0 auto;
+  min-width: 270px;
+  /* margin: 0 auto; */
+
   background-color: white;
   border: 2px solid black;
   padding: 20px 20px 40px 20px;
@@ -139,4 +146,10 @@ p {
 
 .op[value="m"] {
   grid-area: m;
+}
+
+.copyright {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 2rem;
 }

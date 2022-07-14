@@ -52,6 +52,10 @@ eqBtn.addEventListener("click", equalClicked);
 clrBtn.addEventListener("click", clearClicked);
 delBtn.addEventListener("click", delClicked);
 
+// add current year to copyright
+let copyrightYear = document.querySelector("#copyright-year");
+copyrightYear.innerHTML = new Date().getFullYear();
+
 function digitClicked(e) {
   // fired when a digit or decimal point is pressed
   // if this is the very first key to be pressed

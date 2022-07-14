@@ -1,14 +1,13 @@
 // TODO
-// Typing after getting an operation result should erase screen AND
-// equation instead of appending to it
-//
-// Automatically add zero when typing (.1 + .2)
-// Division by zero: write what instead of infinity?
-// Prevent multi dots pressing
-// Emulate windows or Casio calculator bahavior during errors
-// Handle floating points mistakes e.g. (.1 + .2)
-// Add shadow to give 3d-like effect
-// write some short info in footer: copyright & link to github profile
+// [x] Typing after getting an operation result should erase screen AND
+//     equation instead of appending to it
+// [x] Division by zero: emulate Windows Calculator behavior
+// [x] Automatically add zero when typing (.1 + .2)
+// [x] Prevent multi dots pressing
+// [x] Delete .0 when typed into screen or equation or obtained as a result
+// [x] Handle floating points mistakes e.g. (.1 + .2)
+// [ ] Add shadow to give 3d-like effect
+// [ ] write some short info in footer: copyright & link to github profile
 
 
 const CalcScreenDefault = "0";
@@ -24,6 +23,7 @@ const opBtns = document.getElementsByClassName("op");
 const eqBtn = document.getElementsByClassName("eq")[0];
 const clrBtn = document.getElementsByClassName("clr")[0];
 const delBtn = document.getElementsByClassName("del")[0];
+const floatError = .0000000000000001;
 
 // array of operators
 let operators = [];
@@ -54,10 +54,16 @@ function digitClicked(e) {
   // if this is the very first key to be pressed
   // or if an operator was just pressed
   let btn = e.target;
-  if (lastKeyDown === null || CalcOperators.includes(lastKeyDown)) {
-    tb.value = btn.value;
+  if (lastKeyDown === null || lastKeyDown === Equal || CalcOperators.includes(lastKeyDown)) {
+    if (btn.value === ".") {
+      tb.value = "0.";
+    } else {
+      tb.value = btn.value;
+    }
   } else {
-    tb.value += btn.value;
+    if (!(btn.value === "." && tb.value.includes("."))) {
+      tb.value += btn.value;
+    }
   }
   lastKeyDown = btn.value;
 }
@@ -69,6 +75,7 @@ function operatorClicked(e) {
   if (CalcOperators.includes(lastKeyDown)) {
     operators = [btn.value];
   } else {
+    calcScreenTrimPointZero();
     operators.push(btn.value);
     operands.push(tb.value);
     if (operators.length === 2) {
@@ -81,6 +88,17 @@ function operatorClicked(e) {
   updateEquation(false);
 }
 
+function calcScreenTrimPointZero() {
+  // convert x.0 to x
+  if (tb.value.endsWith(".0")) {
+    tb.value = tb.value.slice(0, -2);
+  }
+}
+
+function fixResult(n) {
+  return Number(n.toFixed(15));
+}
+
 function equalClicked() {
   if (lastKeyDown === Equal) {
     // console.log(operands, operators);
@@ -88,6 +106,7 @@ function equalClicked() {
     operands = [tb.value, lastOperands[lastOperands.length - 1]];
     operators = lastOperators;
   } else {
+    calcScreenTrimPointZero();
     operands.push(tb.value);
   }
   console.log("eqPressed", operands, operators);
@@ -103,23 +122,32 @@ function equalClicked() {
 
 function solve() {
   // solves entered equation (so far)
+  let v;
   switch (operators[0]) {
     case "+":
-      tb.value = parseFloat(operands[0]) + parseFloat(operands[1]);
+      v = parseFloat(operands[0]) + parseFloat(operands[1]);
       break;
     case "-":
-      tb.value = parseFloat(operands[0]) - parseFloat(operands[1]);
+      v = parseFloat(operands[0]) - parseFloat(operands[1]);
       break;
     case "*":
-      tb.value = parseFloat(operands[0]) * parseFloat(operands[1]);
+      v = parseFloat(operands[0]) * parseFloat(operands[1]);
       break;
     case "/":
-      tb.value = parseFloat(operands[0]) / parseFloat(operands[1]);
+      if (parseFloat(operands[1]) === 0) {
+        // emulate Windows Calculator behavior
+        tb.value = "Cannot divide by zero";
+        return;
+      }
+      v = parseFloat(operands[0]) / parseFloat(operands[1]);
       break;
     default:
       //alert("Error: unknown operator");
       tb.value = CalcScreenDefault;
+      return;
   }
+  //tb.value = v;
+  tb.value = fixResult(v);
 }
 
 function updateEquation(byEqualKey = true) {
@@ -131,7 +159,12 @@ function updateEquation(byEqualKey = true) {
     eqn.textContent = `${operands[0]} ${operators[0]}`;
   } else {
     if (byEqualKey) {
-      eqn.textContent = `${operands[0]} ${operators[0]} ${operands[1]} = `;
+      if (operands[1] == 0) {
+        // emulate Windows Calculator behavior
+        eqn.textContent = `${operands[0]} ${operators[0]} `;
+      } else {
+        eqn.textContent = `${operands[0]} ${operators[0]} ${operands[1]} = `;
+      }
     } else {
       eqn.textContent = `${tb.value} ${operators[operators.length - 1]}`;
     }

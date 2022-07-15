@@ -186,6 +186,12 @@ p {
   width: 30%; /* Could be more or less, depending on screen size */
 }
 
+@media screen and (max-width: 480px) {
+  .historyDlgContent {
+    width: 100%;
+  }
+}
+
 .close {
   color: #aaa;
   float: right;

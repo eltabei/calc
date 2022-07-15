@@ -12,7 +12,8 @@
 // [x] Fix bug with repeated equal presses
 // [ ] Improve shadow
 // [ ] write some short info in footer: copyright & link to github profile
-
+// [ ] Add history button: shows history in a popup dialog
+// [ ] store history in local storage (last 10 operations)
 
 const CalcScreenDefault = "0";
 const CalcOperators = ["+", "-", "*", "/"];
@@ -61,7 +62,11 @@ function digitClicked(e) {
   // if this is the very first key to be pressed
   // or if an operator was just pressed
   let btn = e.target;
-  if (lastKeyDown === null || lastKeyDown === Equal || CalcOperators.includes(lastKeyDown)) {
+  if (
+    lastKeyDown === null ||
+    lastKeyDown === Equal ||
+    CalcOperators.includes(lastKeyDown)
+  ) {
     if (btn.value === ".") {
       tb.value = "0.";
     } else {
@@ -97,7 +102,7 @@ function operatorClicked(e) {
 
 function calcScreenTrimPointZeros() {
   // convert x.0 to x
-  let v = tb.value
+  let v = tb.value;
   while (v.endsWith("0") || v.endsWith(".")) {
     v = v.slice(0, -1);
   }
@@ -169,12 +174,12 @@ function updateEquation(byEqualKey = true) {
     eqn.textContent = "";
     return;
   }
-  
+
   if (operators.length === 0) {
     eqn.textContent = `${operands[0]} = `;
     return;
   }
-    
+
   if (operands.length === 1) {
     if (operators.length === 0) {
     } else {

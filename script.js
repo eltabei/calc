@@ -69,6 +69,16 @@ if (localStorage.getItem("history")) {
   history = JSON.parse(localStorage.getItem("history"));
 }
 
+// prepare history dialog
+let historyDlg = document.querySelector(".historyDlg");
+let historyList = document.querySelector(".historyList");
+let historyCloseBtn = document.querySelector(".close");
+historyCloseBtn.addEventListener("click", closeHistoryDlg);
+
+function closeHistoryDlg() {
+  historyDlg.style.display = "none"
+}
+
 function digitClicked(e) {
   // fired when a digit or decimal point is pressed
   // if this is the very first key to be pressed
@@ -246,10 +256,20 @@ function AddToHistory() {
 }
 
 function viewHistory() {
-  alert('History:\n' + history.join('\n'));
+  // remove all children of historyList
+  while (historyList.firstChild) {
+    historyList.removeChild(historyList.firstChild);
+  }
+  // re-add all items to historyList
+  for (let entry of history) {
+    let li = document.createElement('li');
+    li.textContent = entry;
+    historyList.appendChild(li);
+  }
+  historyDlg.style.display = "block";
 }
 
-document.onkeydown = function (e) {
+document.onkeydown = function(e) {
   const btn = document.querySelector(
     "div.btnsContainer > button[value='" + e.key + "']"
   );
@@ -282,7 +302,12 @@ document.onkeydown = function (e) {
       delBtn.click();
       break;
     case "Escape":
-      clrBtn.click();
+      // hide historyDlg if shown
+      if (historyDlg.style.display !== "none") {
+        closeHistoryDlg();
+      } else {
+        clrBtn.click();
+      }
       break;
     case "h":
     case "H":
@@ -294,7 +319,7 @@ document.onkeydown = function (e) {
 };
 
 // save history to local storage on exit
-window.onbeforeunload = function () {
+window.onbeforeunload = function() {
   localStorage.setItem("history", JSON.stringify(history));
 }
 

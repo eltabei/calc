@@ -41,8 +41,9 @@ let operands = [];
 let lastKeyDown = null;
 
 // arrays to store previous operation
-let prevOperators = [];
-let prevOprands = [];
+let lastOperators = [];
+let lastOperands = [];
+
 let history = [];
 
 // add event listeners to all digit buttons
@@ -57,6 +58,7 @@ for (const btn of opBtns) {
 eqBtn.addEventListener("click", equalClicked);
 clrBtn.addEventListener("click", clearClicked);
 delBtn.addEventListener("click", delClicked);
+eqn.addEventListener('click', viewHistory);
 
 // add current year to copyright
 let copyrightYear = document.querySelector("#copyright-year");
@@ -139,13 +141,14 @@ function equalClicked() {
   console.log("eqPressed", operands, operators);
   updateEquation();
   solve();
+  AddToHistory();
+
   lastOperands = operands;
   operands = [];
   lastOperators = operators.slice();
   operators.shift();
   lastKeyDown = EQUAL;
   //console.log(operands, operators);
-  AddToHistory();
 }
 
 function solve() {
@@ -238,7 +241,12 @@ function AddToHistory() {
     history.pop();
   }
   // Newer comes first
-  history.unshift(eqn.textContent + ' ' + calcScreen.value);
+  history.unshift(`${eqn.textContent} ${calcScreen.value}`);
+  //history.unshift(`${operands[0]} ${operators[0]} ${operands[1]} = ${calcScreen.value}`);
+}
+
+function viewHistory() {
+  alert('History:\n' + history.join('\n'));
 }
 
 document.onkeydown = function (e) {
@@ -278,8 +286,7 @@ document.onkeydown = function (e) {
       break;
     case "h":
     case "H":
-      console.log(history);
-      alert('History:\n' + history.join('\n'));
+      viewHistory();
       break;
     default:
       break;

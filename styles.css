@@ -171,7 +171,7 @@ p {
   /* Full height */
   height: 100%;
   /* Enable scroll if needed */
-  overflow: auto;
+  /* overflow: auto; */
   /* Fallback color */
   background-color: rgb(0, 0, 0);
   /* Black w/ opacity */
@@ -183,12 +183,13 @@ p {
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 2px solid #888;
-  width: 30%; /* Could be more or less, depending on screen size */
+  /* Could be more or less, depending on screen size */
+  width: 30%;
 }
 
 @media screen and (max-width: 480px) {
   .historyDlgContent {
-    width: 100%;
+    width: calc(100% - 70px);
   }
 }
 

@@ -180,7 +180,8 @@ p {
 
 .historyDlgContent {
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  /* 15% from the top and centered */
+  margin: 35% auto;
   padding: 20px;
   border: 2px solid #888;
   /* Could be more or less, depending on screen size */
@@ -189,6 +190,7 @@ p {
 
 @media screen and (max-width: 480px) {
   .historyDlgContent {
+    margin: 15% auto;
     width: calc(100% - 70px);
   }
 }

@@ -10,24 +10,28 @@
 // [x] Handle single operand then equal
 // [x] Add shadow to give 3d-like effect
 // [x] Fix bug with repeated equal presses
+// [x] write some short info in footer: copyright & link to github profile
+// [x] fix bug with division by zero
 // [ ] Improve shadow
-// [ ] write some short info in footer: copyright & link to github profile
 // [ ] Add history button: shows history in a popup dialog
 // [ ] store history in local storage (last 10 operations)
 
-const CalcScreenDefault = "0";
-const CalcOperators = ["+", "-", "*", "/"];
-const Equal = "=";
-const tb = document.getElementById("calcScreen");
-tb.value = CalcScreenDefault;
-const eqn = document.getElementsByClassName("eqn")[0];
-const allBtns = document.getElementsByClassName("btn");
-const digitBtns = document.getElementsByClassName("digit");
-const opBtns = document.getElementsByClassName("op");
-// const eqBtn = document.querySelector("div.btnsContainer > button[value='=']");
-const eqBtn = document.getElementsByClassName("eq")[0];
-const clrBtn = document.getElementsByClassName("clr")[0];
-const delBtn = document.getElementsByClassName("del")[0];
+
+const CALC_SCREEN_DEFAULT = "0";
+const HISTORY_LENGTH = 10;
+const CALC_OPERATORS = ["+", "-", "*", "/"];
+const EQUAL = "=";
+
+const calcScreen = document.querySelector("#calcScreen");
+calcScreen.value = CALC_SCREEN_DEFAULT;
+const eqn = document.querySelector(".eqn");
+const eqBtn = document.querySelector(".eq");
+const clrBtn = document.querySelector(".clr");
+const delBtn = document.querySelector(".del");
+
+const allBtns = document.querySelectorAll(".btn");
+const digitBtns = document.querySelectorAll(".digit");
+const opBtns = document.querySelectorAll(".op");
 
 // array of operators
 let operators = [];
@@ -39,6 +43,7 @@ let lastKeyDown = null;
 // arrays to store previous operation
 let prevOperators = [];
 let prevOprands = [];
+let history = [];
 
 // add event listeners to all digit buttons
 for (const btn of digitBtns) {
@@ -57,6 +62,11 @@ delBtn.addEventListener("click", delClicked);
 let copyrightYear = document.querySelector("#copyright-year");
 copyrightYear.innerHTML = new Date().getFullYear();
 
+// load history from local storage
+if (localStorage.getItem("history")) {
+  history = JSON.parse(localStorage.getItem("history"));
+}
+
 function digitClicked(e) {
   // fired when a digit or decimal point is pressed
   // if this is the very first key to be pressed
@@ -64,17 +74,17 @@ function digitClicked(e) {
   let btn = e.target;
   if (
     lastKeyDown === null ||
-    lastKeyDown === Equal ||
-    CalcOperators.includes(lastKeyDown)
+    lastKeyDown === EQUAL ||
+    CALC_OPERATORS.includes(lastKeyDown)
   ) {
     if (btn.value === ".") {
-      tb.value = "0.";
+      calcScreen.value = "0.";
     } else {
-      tb.value = btn.value;
+      calcScreen.value = btn.value;
     }
   } else {
-    if (!(btn.value === "." && tb.value.includes("."))) {
-      tb.value += btn.value;
+    if (!(btn.value === "." && calcScreen.value.includes("."))) {
+      calcScreen.value += btn.value;
     }
   }
   lastKeyDown = btn.value;
@@ -84,15 +94,15 @@ function operatorClicked(e) {
   // fired when an operator key is pressed
   let btn = e.target;
   // if 2 operators pressed in a row, ignore the first one
-  if (CalcOperators.includes(lastKeyDown)) {
+  if (CALC_OPERATORS.includes(lastKeyDown)) {
     operators = [btn.value];
   } else {
     calcScreenTrimPointZeros();
     operators.push(btn.value);
-    operands.push(tb.value);
+    operands.push(calcScreen.value);
     if (operators.length === 2) {
       solve();
-      operands = [tb.value];
+      operands = [calcScreen.value];
       operators = [btn.value];
     }
   }
@@ -102,11 +112,14 @@ function operatorClicked(e) {
 
 function calcScreenTrimPointZeros() {
   // convert x.0 to x
-  let v = tb.value;
+  let v = calcScreen.value;
+  if (v == 0) {
+    return;
+  }
   while (v.endsWith("0") || v.endsWith(".")) {
     v = v.slice(0, -1);
   }
-  tb.value = v;
+  calcScreen.value = v;
 }
 
 function fixResult(n) {
@@ -114,14 +127,14 @@ function fixResult(n) {
 }
 
 function equalClicked() {
-  if (lastKeyDown === Equal) {
+  if (lastKeyDown === EQUAL) {
     // console.log(operands, operators);
     // give result of eqn: number on screen, last operation operator,last operation 2nd operand
-    operands = [tb.value, lastOperands[lastOperands.length - 1]];
+    operands = [calcScreen.value, lastOperands[lastOperands.length - 1]];
     operators = lastOperators;
   } else {
     calcScreenTrimPointZeros();
-    operands.push(tb.value);
+    operands.push(calcScreen.value);
   }
   console.log("eqPressed", operands, operators);
   updateEquation();
@@ -130,15 +143,16 @@ function equalClicked() {
   operands = [];
   lastOperators = operators.slice();
   operators.shift();
-  lastKeyDown = Equal;
+  lastKeyDown = EQUAL;
   //console.log(operands, operators);
+  AddToHistory();
 }
 
 function solve() {
   // solves entered equation (so far)
   let v;
   if (operators.length === 0) {
-    tb.value = parseFloat(operands[0]);
+    calcScreen.value = parseFloat(operands[0]);
     return;
   }
   switch (operators[0]) {
@@ -154,18 +168,18 @@ function solve() {
     case "/":
       if (parseFloat(operands[1]) === 0) {
         // emulate Windows Calculator behavior
-        tb.value = "Cannot divide by zero";
+        calcScreen.value = "Cannot divide by zero";
         return;
       }
       v = parseFloat(operands[0]) / parseFloat(operands[1]);
       break;
     default:
       //alert("Error: unknown operator");
-      tb.value = CalcScreenDefault;
+      calcScreen.value = CALC_SCREEN_DEFAULT;
       return;
   }
   //tb.value = v;
-  tb.value = fixResult(v);
+  calcScreen.value = fixResult(v);
 }
 
 function updateEquation(byEqualKey = true) {
@@ -194,14 +208,14 @@ function updateEquation(byEqualKey = true) {
         eqn.textContent = `${operands[0]} ${operators[0]} ${operands[1]} = `;
       }
     } else {
-      eqn.textContent = `${tb.value} ${operators[operators.length - 1]}`;
+      eqn.textContent = `${calcScreen.value} ${operators[operators.length - 1]}`;
     }
   }
   eqn.textContent = eqn.textContent.replace("*", "×").replace("/", "÷");
 }
 
 function clearClicked() {
-  tb.value = CalcScreenDefault;
+  calcScreen.value = CALC_SCREEN_DEFAULT;
   operators = [];
   operands = [];
   lastKeyDown = null;
@@ -209,13 +223,22 @@ function clearClicked() {
 }
 
 function delClicked() {
-  if (tb.value === CalcScreenDefault) {
+  if (calcScreen.value === CALC_SCREEN_DEFAULT) {
     return;
   }
-  tb.value = tb.value.slice(0, -1);
-  if (tb.value === "") {
-    tb.value = CalcScreenDefault;
+  calcScreen.value = calcScreen.value.slice(0, -1);
+  if (calcScreen.value === "") {
+    calcScreen.value = CALC_SCREEN_DEFAULT;
   }
+}
+
+function AddToHistory() {
+  // Only keey last x items
+  if (history.length === HISTORY_LENGTH) {
+    history.pop();
+  }
+  // Newer comes first
+  history.unshift(eqn.textContent + ' ' + calcScreen.value);
 }
 
 document.onkeydown = function (e) {
@@ -253,7 +276,18 @@ document.onkeydown = function (e) {
     case "Escape":
       clrBtn.click();
       break;
+    case "h":
+    case "H":
+      console.log(history);
+      alert('History:\n' + history.join('\n'));
+      break;
     default:
       break;
   }
 };
+
+// save history to local storage on exit
+window.onbeforeunload = function () {
+  localStorage.setItem("history", JSON.stringify(history));
+}
+

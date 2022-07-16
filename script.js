@@ -1,34 +1,17 @@
-// TODO
-// [x] Typing after getting an operation result should erase screen AND
-//     equation instead of appending to it
-// [x] Division by zero: emulate Windows Calculator behavior
-// [x] Automatically add zero when typing (.1 + .2)
-// [x] Prevent multi dots pressing
-// [x] Delete .0 when typed into screen or equation or obtained as a result
-// [x] Handle floating points mistakes e.g. (.1 + .2)
-// [x] Fix bug with x.00000
-// [x] Handle single operand then equal
-// [x] Add shadow to give 3d-like effect
-// [x] Fix bug with repeated equal presses
-// [x] write some short info in footer: copyright & link to github profile
-// [x] fix bug with division by zero
-// [ ] Improve shadow
-// [ ] Add history button: shows history in a popup dialog
-// [ ] store history in local storage (last 10 operations)
-
-
+// Define constants
 const CALC_SCREEN_DEFAULT = "0";
 const HISTORY_LENGTH = 10;
 const CALC_OPERATORS = ["+", "-", "*", "/"];
 const EQUAL = "=";
 
+// UI elements
 const calcScreen = document.querySelector("#calcScreen");
 calcScreen.value = CALC_SCREEN_DEFAULT;
 const eqn = document.querySelector(".eqn");
 const eqBtn = document.querySelector(".eq");
 const clrBtn = document.querySelector(".clr");
 const delBtn = document.querySelector(".del");
-
+// groups of buttons
 const allBtns = document.querySelectorAll(".btn");
 const digitBtns = document.querySelectorAll(".digit");
 const opBtns = document.querySelectorAll(".op");
@@ -45,6 +28,7 @@ let lastOperators = [];
 let lastOperands = [];
 
 let history = [];
+loadHistory();
 
 // add event listeners to all digit buttons
 for (const btn of digitBtns) {
@@ -60,14 +44,13 @@ clrBtn.addEventListener("click", clearClicked);
 delBtn.addEventListener("click", delClicked);
 eqn.addEventListener('click', viewHistory);
 
+document.addEventListener("keydown", onKeyDown);
+// save history to local storage on exit
+window.addEventListener("beforeunload", saveHistory);
+
 // add current year to copyright
 let copyrightYear = document.querySelector("#copyright-year");
 copyrightYear.innerHTML = new Date().getFullYear();
-
-// load history from local storage
-if (localStorage.getItem("history")) {
-  history = JSON.parse(localStorage.getItem("history"));
-}
 
 // prepare history dialog
 let historyDlg = document.querySelector(".historyDlg");
@@ -84,11 +67,7 @@ function digitClicked(e) {
   // if this is the very first key to be pressed
   // or if an operator was just pressed
   let btn = e.target;
-  if (
-    lastKeyDown === null ||
-    lastKeyDown === EQUAL ||
-    CALC_OPERATORS.includes(lastKeyDown)
-  ) {
+  if (lastKeyDown === null || lastKeyDown === EQUAL || CALC_OPERATORS.includes(lastKeyDown)) {
     if (btn.value === ".") {
       calcScreen.value = "0.";
     } else {
@@ -208,8 +187,7 @@ function updateEquation(byEqualKey = true) {
   }
 
   if (operands.length === 1) {
-    if (operators.length === 0) {
-    } else {
+    if (operators.length !== 0) {
       eqn.textContent = `${operands[0]} ${operators[0]}`;
     }
   } else {
@@ -269,7 +247,7 @@ function viewHistory() {
   historyDlg.style.display = "block";
 }
 
-document.onkeydown = function(e) {
+function onKeyDown(e) {
   const btn = document.querySelector(
     "div.btnsContainer > button[value='" + e.key + "']"
   );
@@ -318,8 +296,13 @@ document.onkeydown = function(e) {
   }
 };
 
-// save history to local storage on exit
-window.onbeforeunload = function() {
+function saveHistory() {
   localStorage.setItem("history", JSON.stringify(history));
 }
 
+function loadHistory() {
+  // load history from local storage
+  if (localStorage.getItem("history")) {
+    history = JSON.parse(localStorage.getItem("history"));
+  }
+}

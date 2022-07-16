@@ -180,7 +180,7 @@ p {
 
 .historyDlgContent {
   background-color: #fefefe;
-  /* 15% from the top and centered */
+  /* 35% from the top and centered */
   margin: 35% auto;
   padding: 20px;
   border: 2px solid #888;
@@ -208,6 +208,6 @@ p {
   cursor: pointer;
 }
 
-.historyDlgContent li::marker {
+.historyDlgContent > ol > li::marker {
   font-weight: bold;
 }

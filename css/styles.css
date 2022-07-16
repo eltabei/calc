@@ -181,16 +181,22 @@ p {
 .historyDlgContent {
   background-color: #fefefe;
   /* 35% from the top and centered */
-  margin: 35% auto;
+  /* margin: 35% auto; */
   padding: 20px;
   border: 2px solid #888;
   /* Could be more or less, depending on screen size */
   width: 30%;
+
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: auto;
+  margin-left: auto;
 }
 
 @media screen and (max-width: 480px) {
   .historyDlgContent {
-    margin: 25% auto;
+    /* margin: 25% auto; */
     width: calc(100% - 70px);
   }
 }

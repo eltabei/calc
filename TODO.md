@@ -14,7 +14,7 @@
 - [x] write some short info in footer: copyright & link to github profile
 - [x] fix bug with division by zero
 - [x] store history in local storage (last 10 operations)
-- [ ] center history dialog vertically
-- [ ] Add history button: shows history in a popup dialog
+- [x] show history in a popup dialog
+- [x] center history dialog vertically
+- [x] Organize js code into modules
 - [ ] Improve shadow
-- [ ] Organize js into more files (see correct way to do it)

@@ -1,4 +1,5 @@
 body {
+  /* box-sizing: content-box; */
   background-color: lightgrey;
   /* center page contents horizontally & vertically */
   height: 100vh;
@@ -180,26 +181,24 @@ p {
 
 .historyDlgContent {
   background-color: #fefefe;
-  /* 35% from the top and centered */
-  /* margin: 35% auto; */
   padding: 20px;
   border: 2px solid #888;
   /* Could be more or less, depending on screen size */
   width: 30%;
+  width: 250px;
 
+  /* center vertically */
   position: relative;
   top: 50%;
   transform: translateY(-50%);
-  margin-right: auto;
-  margin-left: auto;
+  margin: auto;
 }
 
-@media screen and (max-width: 480px) {
+/* @media screen and (max-width: 480px) {
   .historyDlgContent {
-    /* margin: 25% auto; */
     width: calc(100% - 70px);
   }
-}
+} */
 
 .close {
   color: #aaa;
